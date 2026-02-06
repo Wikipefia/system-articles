@@ -1,5 +1,7 @@
 name: Validate Content
 
+# Uses @wikipefia/mdx-compiler — the same compilation pipeline as the main site.
+
 on:
   push:
     branches: [main]
@@ -11,7 +13,7 @@ permissions:
 
 jobs:
   validate:
-    name: Validate config & articles
+    name: Validate system config & MDX
     runs-on: ubuntu-latest
 
     steps:
@@ -32,125 +34,3 @@ jobs:
 
       - name: Validate content
         run: pnpm validate
-
-  structure-check:
-    name: Check repository structure
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Check config.json
-        run: |
-          if [ ! -f config.json ]; then
-            echo "::error::config.json is missing"
-            exit 1
-          fi
-          if ! python3 -c "import json; json.load(open('config.json'))"; then
-            echo "::error::config.json is not valid JSON"
-            exit 1
-          fi
-          echo "✓ config.json is valid JSON"
-
-      - name: Check articles directory
-        run: |
-          if [ ! -d articles ]; then
-            echo "::error::articles/ directory is missing"
-            exit 1
-          fi
-          echo "✓ articles/ directory exists"
-
-      - name: Check registered articles exist
-        run: |
-          ERRORS=0
-          ARTICLE_SLUGS=$(python3 -c "
-          import json
-          config = json.load(open('config.json'))
-          for a in config.get('articles', []):
-              print(a['slug'])
-          ")
-
-          for slug in $ARTICLE_SLUGS; do
-            FOUND=0
-            for locale in en ru cz; do
-              if [ -f "articles/$locale/$slug.mdx" ]; then
-                FOUND=1
-                break
-              fi
-            done
-            if [ "$FOUND" -eq 0 ]; then
-              echo "::error::Article '$slug' registered in config.json but no MDX file found"
-              ERRORS=$((ERRORS + 1))
-            else
-              echo "✓ $slug exists"
-            fi
-          done
-
-          if [ "$ERRORS" -gt 0 ]; then
-            exit 1
-          fi
-
-  frontmatter-check:
-    name: Validate MDX frontmatter
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Check all frontmatter
-        run: |
-          pip install pyyaml > /dev/null 2>&1
-          python3 << 'PYEOF'
-          import yaml, os, sys
-
-          errors = []
-          for root, dirs, files in os.walk("articles"):
-              for f in files:
-                  if not f.endswith(".mdx"):
-                      continue
-                  filepath = os.path.join(root, f)
-                  with open(filepath) as fh:
-                      content = fh.read()
-
-                  if not content.startswith("---"):
-                      errors.append(f"{filepath}: Missing frontmatter")
-                      continue
-
-                  parts = content.split("---", 2)
-                  if len(parts) < 3:
-                      errors.append(f"{filepath}: Unclosed frontmatter")
-                      continue
-
-                  try:
-                      fm = yaml.safe_load(parts[1])
-                  except yaml.YAMLError as e:
-                      errors.append(f"{filepath}: Invalid YAML: {e}")
-                      continue
-
-                  if not isinstance(fm, dict):
-                      errors.append(f"{filepath}: Not a mapping")
-                      continue
-
-                  for field in ["title", "slug", "keywords", "created"]:
-                      if field not in fm:
-                          errors.append(f"{filepath}: Missing '{field}'")
-
-                  for field in ["title", "keywords"]:
-                      if field in fm and isinstance(fm[field], dict):
-                          for loc in ["ru", "en", "cz"]:
-                              if loc not in fm[field]:
-                                  errors.append(f"{filepath}: '{field}' missing '{loc}'")
-
-                  expected = os.path.splitext(f)[0]
-                  if "slug" in fm and fm["slug"] != expected:
-                      errors.append(f"{filepath}: slug '{fm['slug']}' != filename '{expected}'")
-
-          if errors:
-              for e in errors:
-                  print(f"::error::{e}", file=sys.stderr)
-              sys.exit(1)
-          else:
-              print("✓ All frontmatter valid")
-          PYEOF
