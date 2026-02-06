@@ -1,0 +1,164 @@
+---
+description: Complete reference of all available MDX components for Wikipefia content — props, nesting rules, and usage examples.
+globs: "**/*.mdx"
+alwaysApply: false
+---
+
+# Wikipefia MDX Components Reference
+
+All custom components are validated at build time. Unknown components or missing required props cause compilation errors.
+
+## Callout
+
+Highlighted box for tips, warnings, or errors.
+
+- `type` (optional): `"info"` (default) | `"warning"` | `"error"`
+
+```mdx
+<Callout type="info">
+  Tip or supplementary information.
+</Callout>
+
+<Callout type="warning">
+  Common mistake or gotcha.
+</Callout>
+
+<Callout type="error">
+  Critical error or danger notice.
+</Callout>
+```
+
+## Tabs / Tab
+
+Tabbed content interface. `Tab` must be a direct child of `Tabs`.
+
+- `Tabs`: no props, requires `Tab` children
+- `Tab`: `label` (required, string)
+
+```mdx
+<Tabs>
+  <Tab label="Python">
+    Python example here.
+  </Tab>
+  <Tab label="JavaScript">
+    JavaScript example here.
+  </Tab>
+</Tabs>
+```
+
+## Collapse
+
+Expandable/collapsible section for progressive disclosure.
+
+- `title` (required, string)
+
+```mdx
+<Collapse title="Show proof">
+  Proof details hidden by default.
+</Collapse>
+```
+
+## Quiz / Question / Option
+
+Interactive multiple-choice quiz. Nesting: `Question` inside `Quiz`, `Option` inside `Question`.
+
+- `Quiz`: no props, requires `Question` children
+- `Question`: `text` (required, string)
+- `Option`: `value` (required, string), `correct` (optional, boolean)
+
+```mdx
+<Quiz>
+  <Question text="What is 2 + 2?">
+    <Option value="3">Three</Option>
+    <Option value="4" correct>Four</Option>
+    <Option value="5">Five</Option>
+  </Question>
+</Quiz>
+```
+
+## CodePlayground
+
+Editable code block with copy/reset. Prefer the `code` prop over children to preserve formatting.
+
+- `language` (optional, string, default: `"python"`)
+- `code` (optional, string — preferred)
+- `children` (optional — fallback, may lose whitespace)
+
+```mdx
+<CodePlayground language="python" code={`def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("World"))`} />
+```
+
+## Figure
+
+Image with optional caption.
+
+- `src` (required, string)
+- `alt` (required, string)
+- `caption` (optional, string)
+- `width` (optional, number, default: 800)
+- `height` (optional, number, default: 450)
+
+```mdx
+<Figure
+  src="/assets/diagram.png"
+  alt="Flow diagram"
+  caption="System architecture overview"
+  width={600}
+  height={400}
+/>
+```
+
+## MathBlock
+
+Display math wrapper. Prefer `$$...$$` syntax instead when possible.
+
+- `children` (required)
+
+```mdx
+<MathBlock>
+  E = mc^2
+</MathBlock>
+```
+
+Preferred alternative (identical output):
+
+```mdx
+$$
+E = mc^2
+$$
+```
+
+## Math (via remark-math + KaTeX)
+
+Not a component — built-in syntax processed by plugins.
+
+- Inline: `$E = mc^2$`
+- Block: `$$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$$`
+
+## Nesting Rules
+
+| Child | Must be inside |
+|-------|---------------|
+| `Tab` | `Tabs` |
+| `Question` | `Quiz` |
+| `Option` | `Question` |
+
+Violating nesting rules causes a build error.
+
+## Quick Reference
+
+| Component | Required Props | Optional Props |
+|-----------|---------------|----------------|
+| `Callout` | children | `type` |
+| `Tabs` | `Tab` children | — |
+| `Tab` | `label`, children | — |
+| `Collapse` | `title`, children | — |
+| `Quiz` | `Question` children | — |
+| `Question` | `text`, `Option` children | — |
+| `Option` | `value`, children | `correct` |
+| `CodePlayground` | — | `language`, `code`, children |
+| `Figure` | `src`, `alt` | `caption`, `width`, `height` |
+| `MathBlock` | children | — |
