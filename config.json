@@ -1,0 +1,67 @@
+{
+  "articles": [
+    {
+      "slug": "semester-1-overview",
+      "route": "/semester-1-overview",
+      "name": {
+        "ru": "Обзор первого семестра",
+        "en": "First Semester Overview",
+        "cz": "Přehled prvního semestru"
+      },
+      "description": {
+        "ru": "Полное руководство по первому семестру: предметы, расписание и советы",
+        "en": "Complete guide to your first semester: subjects, schedule, and tips",
+        "cz": "Kompletní průvodce prvním semestrem: předměty, rozvrh a tipy"
+      },
+      "keywords": {
+        "ru": ["первый семестр", "обзор", "предметы", "расписание"],
+        "en": ["first semester", "overview", "subjects", "schedule"],
+        "cz": ["první semestr", "přehled", "předměty", "rozvrh"]
+      },
+      "pinned": true,
+      "order": 1
+    },
+    {
+      "slug": "getting-started",
+      "route": "/getting-started",
+      "name": {
+        "ru": "С чего начать",
+        "en": "Getting Started",
+        "cz": "Jak začít"
+      },
+      "description": {
+        "ru": "Как пользоваться Wikipefia: навигация, поиск и возможности платформы",
+        "en": "How to use Wikipefia: navigation, search, and platform features",
+        "cz": "Jak používat Wikipefia: navigace, vyhledávání a funkce platformy"
+      },
+      "keywords": {
+        "ru": ["начало", "руководство", "навигация", "поиск"],
+        "en": ["getting started", "guide", "navigation", "search"],
+        "cz": ["začátek", "průvodce", "navigace", "vyhledávání"]
+      },
+      "pinned": true,
+      "order": 0
+    },
+    {
+      "slug": "faq",
+      "route": "/faq",
+      "name": {
+        "ru": "Часто задаваемые вопросы",
+        "en": "Frequently Asked Questions",
+        "cz": "Často kladené otázky"
+      },
+      "description": {
+        "ru": "Ответы на самые частые вопросы студентов",
+        "en": "Answers to the most common student questions",
+        "cz": "Odpovědi na nejčastější otázky studentů"
+      },
+      "keywords": {
+        "ru": ["FAQ", "вопросы", "ответы", "помощь"],
+        "en": ["FAQ", "questions", "answers", "help"],
+        "cz": ["FAQ", "otázky", "odpovědi", "pomoc"]
+      },
+      "pinned": false,
+      "order": 10
+    }
+  ]
+}
