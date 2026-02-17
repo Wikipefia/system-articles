@@ -138,6 +138,108 @@ Not a component — built-in syntax processed by plugins.
 - Inline: `$E = mc^2$`
 - Block: `$$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$$`
 
+## Graph / Plot / Slider
+
+Interactive function plotter (SVG). Pass math expression strings as `expr` props — evaluated by a safe parser. Variable `x` is the horizontal axis, slider variables available by name.
+
+- `Graph`: `title`, `xLabel`, `yLabel`, `xDomain`, `yDomain`. Requires `Plot` children.
+- `Plot`: `expr` (required, math expression string like "a * x^2"), `color`, `label`, `dashed`. Inside `Graph`.
+- `Slider`: `name` (required), `min`, `max`, `default`, `step`, `label`. Inside `Graph` or `Interactive`.
+
+Math expressions support: `+`, `-`, `*`, `/`, `^` (power), parentheses, common functions (`sin`, `cos`, `sqrt`, `abs`, `log`, `min`, `max`, `pow`, `exp`), and constants (`PI`, `E`).
+
+```mdx
+<Graph title="f(x)" xLabel="x" yLabel="y" xDomain={[-5, 5]} yDomain={[-2, 25]}>
+  <Plot expr="a * x^2" color="#0066cc" label="ax²" />
+  <Slider name="a" min={0.5} max={5} default={1} step={0.1} label="Coefficient a" />
+</Graph>
+```
+
+## Interactive / Value / Toggle
+
+Reactive sandbox — sliders and toggles control computed values.
+
+- `Interactive`: `title` (optional, string). Requires children.
+- `Value`: `label` (required), `expr` (required, math expression string), `decimals` (optional, number, default 2), `prefix` (optional, string), `suffix` (optional, string). Inside `Interactive`.
+- `Toggle`: `name` (required), `default` (optional, boolean), `label` (optional, string). Inside `Interactive`.
+
+Math expressions support: `+`, `-`, `*`, `/`, `^` (power), parentheses, common functions (`sin`, `cos`, `sqrt`, `abs`, `log`, `min`, `max`, `pow`, `exp`), and constants (`PI`, `E`). Slider variables available by name.
+
+```mdx
+<Interactive title="Calculator">
+  <Slider name="x" min={0} max={100} default={50} step={1} label="Input" />
+  <Value label="Doubled" expr="x * 2" />
+  <Toggle name="show" default={true} label="Show details" />
+</Interactive>
+```
+
+## Timeline / TimelineEvent
+
+Vertical chronological event display.
+
+```mdx
+<Timeline title="Milestones">
+  <TimelineEvent date="2025" title="Launch">Platform goes live.</TimelineEvent>
+</Timeline>
+```
+
+## DataTable
+
+Sortable data table. `columns` (string[]), `rows` (string[][]), `caption`, `sortable`.
+
+```mdx
+<DataTable caption="Data" columns={["Name", "Value"]} rows={[["A", "100"], ["B", "200"]]} sortable />
+```
+
+## Comparison / ComparisonItem
+
+Side-by-side comparison columns.
+
+```mdx
+<Comparison title="Options">
+  <ComparisonItem title="A">Details of A.</ComparisonItem>
+  <ComparisonItem title="B">Details of B.</ComparisonItem>
+</Comparison>
+```
+
+## Definition
+
+Highlights a key term with its explanation.
+
+```mdx
+<Definition term="API">Application Programming Interface.</Definition>
+```
+
+## StepByStep / Step
+
+Progressive reveal walkthrough. Do NOT indent `<Step>` tags. Avoid bullet lists inside Steps.
+
+```mdx
+<StepByStep title="Setup">
+<Step title="Install">
+
+Run `npm install` in the project root.
+
+</Step>
+<Step title="Configure">
+
+Copy `.env.example` to `.env` and fill in values.
+
+</Step>
+</StepByStep>
+```
+
+## Custom Styling with Tailwind CSS
+
+Use **Tailwind CSS utility classes** directly in MDX for custom layouts not covered by built-in components.
+
+```mdx
+<div className="grid grid-cols-2 gap-4 border-2 border-black p-4 my-6">
+  <div className="bg-red-50 p-3 font-mono text-sm">Left</div>
+  <div className="bg-blue-50 p-3 font-mono text-sm">Right</div>
+</div>
+```
+
 ## Nesting Rules
 
 | Child | Must be inside |
@@ -145,20 +247,32 @@ Not a component — built-in syntax processed by plugins.
 | `Tab` | `Tabs` |
 | `Question` | `Quiz` |
 | `Option` | `Question` |
-
-Violating nesting rules causes a build error.
+| `Plot` | `Graph` |
+| `TimelineEvent` | `Timeline` |
+| `ComparisonItem` | `Comparison` |
+| `Step` | `StepByStep` |
+| `Value` | `Interactive` |
+| `Toggle` | `Interactive` |
 
 ## Quick Reference
 
 | Component | Required Props | Optional Props |
 |-----------|---------------|----------------|
 | `Callout` | children | `type` |
-| `Tabs` | `Tab` children | — |
-| `Tab` | `label`, children | — |
+| `Tabs` / `Tab` | `label`, children | — |
 | `Collapse` | `title`, children | — |
-| `Quiz` | `Question` children | — |
-| `Question` | `text`, `Option` children | — |
-| `Option` | `value`, children | `correct` |
-| `CodePlayground` | — | `language`, `code`, children |
+| `Quiz` / `Question` / `Option` | `text`, `value` | `correct` |
+| `CodePlayground` | — | `language`, `code` |
 | `Figure` | `src`, `alt` | `caption`, `width`, `height` |
 | `MathBlock` | children | — |
+| `Graph` | `Plot` children | `title`, `xLabel`, `yLabel`, `xDomain`, `yDomain` |
+| `Plot` | `expr` | `color`, `label`, `dashed` |
+| `Slider` | `name` | `min`, `max`, `default`, `step`, `label` |
+| `Interactive` | children | `title` |
+| `Value` | `label`, `expr` | `decimals`, `prefix`, `suffix` |
+| `Toggle` | `name` | `default`, `label` |
+| `Timeline` / `TimelineEvent` | `date`, `title` | `color` |
+| `DataTable` | `columns`, `rows` | `caption`, `sortable` |
+| `Comparison` / `ComparisonItem` | `title`, children | `color` |
+| `Definition` | `term`, children | — |
+| `StepByStep` / `Step` | `title`, children | — |
