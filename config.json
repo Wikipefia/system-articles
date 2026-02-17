@@ -62,6 +62,27 @@
       },
       "pinned": false,
       "order": 10
+    },
+    {
+      "slug": "core-values",
+      "route": "/core-values",
+      "name": {
+        "ru": "Ценности проекта",
+        "en": "Project Core Values",
+        "cz": "Základní hodnoty projektu"
+      },
+      "description": {
+        "ru": "Цель проекта, принципы Wikipefia и фундаментальная миссия",
+        "en": "Project purpose, Wikipefia principles, and the fundamental mission",
+        "cz": "Cíl projektu, principy Wikipefia a základní mise"
+      },
+      "keywords": {
+        "ru": ["ценности", "миссия", "принципы", "wikipefia"],
+        "en": ["values", "mission", "principles", "wikipefia"],
+        "cz": ["hodnoty", "mise", "principy", "wikipefia"]
+      },
+      "pinned": false,
+      "order": 2
     }
   ]
 }
